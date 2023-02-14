@@ -1,0 +1,58 @@
+env: PE
+
+env_args:
+  constraints:
+    max_v: 3.0 # max linear velocity
+    min_v: 0.0 # min linear velocity
+    max_v_acc: 0.7 # max linear acceleration
+    max_w: 0.5235987755982988 # pi/6.0 # max angular velocity
+    max_w_acc: 5.235987755982988 # pi/3.0*5 # max angular acceleration
+    boundary_wall: [-10, 10, 10, -10] # The rectangular boundary wall defined by left-top to right-bottom coordinates
+
+  agent:
+    pursuer:
+      n: 2 # number of pursuer
+      x: -5.0  # initial x-coordinate for pursuer
+      y: -3.0  # initial y-coordinate for pursuer
+      yaw: 0.0  # initial yaw angle for pursuer
+      radius: 0.2 # pursuer radius
+      fixed: true # random-pursuer or not
+    evader:
+      n: 1 # number of evader
+      x: 0.0  # initial x-coordinate for evader
+      y: 1.0  # initial y-coordinate for evader
+      yaw: 0.0  # initial yaw angle for evader
+      radius: 0.2 # evader radius
+      fixed: true
+
+  obstacle:
+    radius: 0.3  # obstacle radius
+    o_coordinates: [
+        [0.0, -4.0],
+        [4.0, 2.0],
+        [-2.0, 1.0],
+        [-8.0, 4.0],
+        [7.0, 9.0]
+    ]  # obstacle coordinates list
+    fixed: true # random-obstacle or not
+  max_init_distance: 5.0
+  time_step: 0.1
+
+  laser:
+    max_laser_angle: 3.1415926 # pi
+    min_laser_angle: -3.1415926 # -pi
+    step_laser_angle: 0.017453292519943295 # pi/180.0
+    laser_range: 3.0
+    laser_sample_resolution: 0.1  # sampling resolution of percept region
+    laser_sample_resolution_scale: 1.5  # sampling density decreases with distance from percept region center
+
+  train:
+    episode_timelimit: 500
+
+test_greedy: True
+test_nepisode: 32
+test_interval: 10000
+log_interval: 10000
+runner_log_interval: 10000
+learner_log_interval: 10000
+t_max: 2050000

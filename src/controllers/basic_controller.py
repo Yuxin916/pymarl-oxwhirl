@@ -1,9 +1,16 @@
 from modules.agents import REGISTRY as agent_REGISTRY
+# from .rnn_agent import RNNAgent
+# REGISTRY["rnn"] = RNNAgent
 from components.action_selectors import REGISTRY as action_REGISTRY
 import torch as th
 
 
 # This multi-agent controller shares parameters between agents
+# 属于自定义的controller.basic_controller.BasicMAC类，
+# 该对象的主要作用是 控制智能体，因此mac对象中的一个重要属性就是nn.module类的智能体对象mac.agent，
+# 该对象定义了各个智能体的局部Q网络，即接收观测作为输入，输出智能体各个动作的Q值。
+# 另外，QMix使用的是DRQN结构，因此mac.agent用的是RNN网络，mac.hidden_states储存了RNN的隐层变量。
+
 class BasicMAC:
     def __init__(self, scheme, groups, args):
         self.n_agents = args.n_agents

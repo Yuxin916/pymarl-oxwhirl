@@ -10,23 +10,28 @@ import sys
 import torch as th
 from utils.logging import get_logger
 import yaml
-
 from run import run
 
-SETTINGS['CAPTURE_MODE'] = "fd" # set to "no" if you want to see stdout/stderr in console
-logger = get_logger()
+# set to "no" if you want to see stdout/stderr in console
+# scared tool 提供的方法，选择需要记录的输出内容
+SETTINGS['CAPTURE_MODE'] = "fd"
 
+# 定义 logger 和 Sacred.Experiment 类实例，并将日志赋值给到 ex.logger
+logger = get_logger()
 ex = Experiment("pymarl")
 ex.logger = logger
+
+# 设置输出文件的格式，避免有些实时输出（进度条等）不适合文件输出的形式
 ex.captured_out_filter = apply_backspaces_and_linefeeds
 
+# '/home/tsaisplus/Codes/results'
 results_path = os.path.join(dirname(dirname(abspath(__file__))), "results")
-
 
 @ex.main
 def my_main(_run, _config, _log):
     # Setting the random seed throughout the modules
     config = config_copy(_config)
+    #为模块设置可复现的 seed ，并记录在 config 文件中
     np.random.seed(config["seed"])
     th.manual_seed(config["seed"])
     config['env_args']['seed'] = config["seed"]
@@ -46,7 +51,7 @@ def _get_config(params, arg_name, subfolder):
     if config_name is not None:
         with open(os.path.join(os.path.dirname(__file__), "config", subfolder, "{}.yaml".format(config_name)), "r") as f:
             try:
-                config_dict = yaml.load(f)
+                config_dict = yaml.safe_load(f)
             except yaml.YAMLError as exc:
                 assert False, "{}.yaml error: {}".format(config_name, exc)
         return config_dict
@@ -74,9 +79,10 @@ if __name__ == '__main__':
     params = deepcopy(sys.argv)
 
     # Get the defaults from default.yaml
-    with open(os.path.join(os.path.dirname(__file__), "config", "default.yaml"), "r") as f:
+    # with open(os.path.join(os.path.dirname(__file__), "config", "default.yaml"), "r") as f:
+    with open(os.path.join(os.path.dirname(__file__), "config", "default_PE.yaml"), "r") as f:
         try:
-            config_dict = yaml.load(f)
+            config_dict = yaml.safe_load(f)
         except yaml.YAMLError as exc:
             assert False, "default.yaml error: {}".format(exc)
 
